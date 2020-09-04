@@ -7,7 +7,7 @@ typedef struct product{
 
 
 const product products[5][5]={
-//Category 1
+//Cmobile
 {{id,"name",price},{id,"name",price},{id,"name",price},{id,"name",price},{id,"name",price}},
 //Category 2
 {{id,"name",price},{id,"name",price},{id,"name",price},{id,"name",price},{id,"name",price}},

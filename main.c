@@ -10,13 +10,13 @@ struct account_node{
 char username[15];
 char password[15];
 struct account_node *address;
-}*account_start,*current,*account_last;
+}*account_start,*account_current,*account_last;
 
 struct cart_node{
     product *address;
     struct cart_node *next_node;
     int quantity;
-}*cart_start,*cart,*cart_last;
+}*cart_start,*cart_current,*cart_last;
 
 void add_to_cart(int *product,int quantity){
     struct cart_node *temp=malloc(sizeof(struct cart_node));
@@ -126,9 +126,9 @@ int login(){
 			char username[15];
 			fflush(stdin);
 			gets(username);
-			current=account_start;
-			while(current!=NULL){
-				if(strcmp(username,current->username)==0){
+			account_current=account_start;
+			while(account_current!=NULL){
+				if(strcmp(username,account_current->username)==0){
 					gotoxy(61,18);
 					printf("\t\tPASSWORD: ");
 					char password[15];
@@ -142,7 +142,7 @@ int login(){
 					}while(password[j-1]!='\r');
 					password[j-1]='\0';
 
-					if(strcmp(password,current->password)==0){
+					if(strcmp(password,account_current->password)==0){
 						gotoxy(61,19);
 						printf("\t\tLogin Successful");
 						j=0;
@@ -154,9 +154,9 @@ int login(){
 					}
 					return 1;
 				}
-				current=current->address;
+				account_current=account_current->address;
 			}
-			if(current==NULL){
+			if(account_current==NULL){
 				gotoxy(61,18);
 				printf("NO ACCOUNT FOUND...");
 				getch();
@@ -170,14 +170,15 @@ int login(){
 			char username[15];
 			fflush(stdin);
 			gets(username);
-            while(current!=NULL){
-				if(strcmp(username,current->username)==0){
+			account_current=account_start;
+            while(account_current!=NULL){
+				if(strcmp(username,account_current->username)==0){
                     gotoxy(61,17);
                     printf("Username already taken...");
                     getch();
                     goto acceptusername;
 				}
-            current=current->address;
+            account_current=account_current->address;
 			}
 			gotoxy(61,17);
 			printf("\t\tENTER PASSWORD: ");
