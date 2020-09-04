@@ -31,18 +31,43 @@ void add_to_cart(int *product,int quantity){
         cart_last->address=temp;
         cart_last=account_last->address;
 	}
+	gotoxy(50,24);
 	printf("Product added to Cart....");
+	getch();
 }
 
 void display_category(int i_index){
-    printf("Product ID\tName\t\t Price\t\t\n");
-  int j;
-  for(j=0; j<5; j++){
-    printf(" %d\t\t %s\t %d  \t\t %f \t\n",products[i_index][j].product_id,products[i_index][j].product_name,products[i_index][j].price);
+    system("cls");
+    gotoxy(50,15);
+    if(i_index==0){
+        printf("------------------MOBILES--------------------");
+    }
+    else if(i_index==1){
+        printf("-----------------LAPTOP-------------------");
+    }
+    else if(i_index==2){
+        printf("----------------FRIDGE----------------");
+    }
+    else if(i_index==3){
+        printf("------------------TV----------------");
+    }
+    else if(i_index==4){
+        printf("---------------PURIFIER--------------------");
+    }
+    gotoxy(50,16);
+    printf("Product ID\tName\t\t\t Price\t\t\n");
+  int j,y;
+  for(j=0,y=17; j<5; j++,y++){
+        gotoxy(50,y);
+    printf("%d\t\t%-22s\t %.2f",products[i_index][j].product_id,products[i_index][j].product_name,products[i_index][j].price);
   }
-  printf("Enter Product ID to buy: ");
+  gotoxy(50,22);
+  printf("Enter Product ID to buy or 0 to Go back: ");
   int product_id;
   accept_id: scanf("%d",&product_id);
+  if(product_id==0){
+    return;
+  }
    //binary search
    int lower=0;
    int upper=5,middle;
@@ -58,14 +83,15 @@ void display_category(int i_index){
             upper=middle-1;
         }
     }while(lower<=upper);
+     gotoxy(50,22);
     if(lower>=upper){
-        printf("\nWrong product ID...");
+        printf("\nWrong product ID... Enter correctly: ");
         goto accept_id;
     }
     else{
         printf("\nHow many item: ");
         int quantity;
-        scanf("%d",quantity);
+        scanf("%d",&quantity);
         add_to_cart(&products[i_index][middle],quantity);
     }
 }
@@ -86,19 +112,30 @@ void newaccount(char user[],char pass[]){
 }
 
 void shop(){
-    printf("---------CATEGORIES----------");
-    printf("1.product 1\n");
-    printf("2.product 2\n");
-    printf("3.product 3\n");
-    printf("4.product 4\n");
-    printf("5.product 5\n");
-    printf("6.Back\n");
-    printf("Enter choice: ");
     int choice;
-    scanf("%d",&choice);
-    if(choice!=6){
-       display_category(choice-1);
-    }
+    do{
+        system("cls");
+        gotoxy(61,15);
+        printf("---------CATEGORIES----------");
+        gotoxy(61,16);
+        printf("1.Mobile");
+        gotoxy(61,17);
+        printf("2.Laptop");
+        gotoxy(61,18);
+        printf("3.Refrigerator");
+        gotoxy(61,19);
+        printf("4.TV");
+        gotoxy(61,20);
+        printf("5.Purifiers");
+        gotoxy(61,21);
+        printf("6.Back");
+        gotoxy(61,22);
+        printf("Enter choice: ");
+        scanf("%d",&choice);
+        if(choice!=6){
+           display_category(choice-1);
+        }
+    }while(choice!=6);
     return;
 }
 
@@ -113,6 +150,8 @@ int login(){
 	gotoxy(61,18);
 	printf("2.New Account");
 	gotoxy(61,19);
+	printf("3.EXIT");
+	gotoxy(61,20);
 	printf("Enter Choice: ");
 	int choice;
 	scanf("%d",&choice);
@@ -197,23 +236,26 @@ int login(){
 			printf("Account Created.... Continue to Login.");
 			getch();
 			return 0;
+            }
+        case 3:
+            exit(0);
 		}
-	}
 }
 
-void show_cart(){
+void display_cart(){
     //display function
 }
 
-void check_out(){
+void checkout(){
     //display bill.
 
-    exit(0);
+
 }
 
-void display_main_menu(){
+int display_main_menu(){
      do{
          system("cls");
+         gotoxy(61,15);
          printf("-------------WELCOME TO ABC SHOPPING-------------");
          gotoxy(61,16);
          printf("1.Shop");
@@ -222,9 +264,11 @@ void display_main_menu(){
          gotoxy(61,18);
          printf("3.Checkout");
          gotoxy(61,19);
+         printf("4.Logout");
+         gotoxy(61,20);
          printf("Enter choice: ");
          int choice;
-         scanf("%d",choice);
+         scanf("%d",&choice);
          switch(choice){
          case 1:
             shop();
@@ -235,6 +279,11 @@ void display_main_menu(){
          case 3:
             checkout();
             break;
+        case 4:
+            gotoxy(61,22);
+            printf("Logged out....");
+            getch();
+            return 0;
          }
 
     }while(1);
@@ -243,12 +292,15 @@ void display_main_menu(){
 int main(){
     load_accounts();
 	int login_status=0;
-	while(login_status==0){
+	do{
+            system("cls");
+        while(login_status==0){
 		login_status=login();
 		system("cls");
-	}
-	if(login_status==1){
-        display_main_menu();
-	}
+        }
+        if(login_status==1){
+            login_status=display_main_menu();
+        }
+	}while(1);
 	return 0;
 }

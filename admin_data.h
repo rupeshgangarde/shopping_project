@@ -8,7 +8,7 @@ typedef struct product{
 
 const product products[5][5]={
 //mobile
-{{1111," Apple Iphone 7",29000},{1112,"redmi note 9",20000},{1113,"samsang M31",19000},{1114,"poco F20",25000},{1115,"realme X5",15000}},
+{{1111,"Apple Iphone 7",29000},{1112,"Redmi note 9",20000},{1113,"Samsang M31",19000},{1114,"Poco F20",25000},{1115,"Realme X5",15000}},
 //laptop
 {{1116,"HP",59000},{1117,"Dell",47000},{1118,"Apple",98000},{1119,"Lenovo",22000},{1120,"Asus",28000}},
 //Refrigerators
