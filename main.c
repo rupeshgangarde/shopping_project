@@ -242,15 +242,48 @@ int login(){
 		}
 }
 
-void display_cart(){
-    //display function
+
+int display_cart(){
+    //display function{
+	if(cart_start==NULL)
+	{
+		printf("cart is empty");
+	}
+	else
+	{
+		cart_current=cart_start;
+		while(cart_current!=NULL)
+		{
+			printf("%d %s %.2f %d",cart_current->address->product_id,cart_current->address->product_name,cart_current->address->price,cart_current->quantity);
+			cart_current=cart_current->address;
+		}
+	}
+	return;
 }
 
-void checkout(){
+
+void check_out(){
     //display bill.
-
-
+    int total,result=0;
+    if(cart_start==NULL)
+	{
+		printf("cart is empty");
+	}
+	else
+	{
+		cart_current=cart_start;
+		while(cart_current!=NULL)
+		{
+			total=cart_current->address->price*cart_current->quantity;
+			printf("%d %s %f %d %d",cart_current->address->product_id,cart_current->address->product_name,cart_current->address->price,cart_current->quantity,total);
+			cart_current=cart_current->address;
+		}
+		result=result+total;
+		printf("grand total is %d",result);
+	}
 }
+
+
 
 int display_main_menu(){
      do{
@@ -277,7 +310,7 @@ int display_main_menu(){
             display_cart();
             break;
          case 3:
-            checkout();
+            check_out();
             break;
         case 4:
             gotoxy(61,22);
