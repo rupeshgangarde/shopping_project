@@ -13,32 +13,47 @@ struct account_node *address;
 }*account_start,*account_current,*account_last;
 
 struct cart_node{
-    product *address;
+    product *product_address;
     struct cart_node *next_node;
     int quantity;
+    float total;
 }*cart_start,*cart_current,*cart_last;
 
 void add_to_cart(int *product,int quantity){
     struct cart_node *temp=malloc(sizeof(struct cart_node));
-	temp->address=product;
+	temp->product_address=product;
 	temp->quantity=quantity;
 	temp->next_node=NULL;
+	temp->total=(temp->product_address->price)*quantity;
 	if(cart_start==NULL){
         cart_start=temp;
         cart_last=temp;
 	}
 	else{
-        cart_last->address=temp;
-        cart_last=account_last->address;
+        //check if product already in cart.
+        cart_current=cart_start;
+        while(cart_current!=NULL){
+            if(temp->product_address->product_id==cart_current->product_address->product_id){
+                cart_current->quantity+=quantity;
+                cart_current->total+=temp->total;
+                free(temp);
+                printf("\nProduct added to Cart....Please wait");
+                delay(1);
+                return;
+            }
+            cart_current=cart_current->next_node;
+        }
+        cart_last->next_node=temp;
+        cart_last=cart_last->next_node;
 	}
-	gotoxy(50,24);
-	printf("Product added to Cart....");
-	getch();
+	printf("\nProduct added to Cart....Please wait");
+	delay(1);
 }
 
 void display_category(int i_index){
+    start:
     system("cls");
-    gotoxy(50,15);
+    printf("\n");
     if(i_index==0){
         printf("------------------MOBILES--------------------");
     }
@@ -54,17 +69,14 @@ void display_category(int i_index){
     else if(i_index==4){
         printf("---------------PURIFIER--------------------");
     }
-    gotoxy(50,16);
-    printf("Product ID\tName\t\t\t Price\t\t\n");
-  int j,y;
-  for(j=0,y=17; j<5; j++,y++){
-        gotoxy(50,y);
-    printf("%d\t\t%-22s\t %.2f",products[i_index][j].product_id,products[i_index][j].product_name,products[i_index][j].price);
+    printf("\nProduct ID\tName\t\t\t Price\t\t\n");
+  int j;
+  for(j=0; j<5; j++){
+    printf("\n%d\t\t%-22s\t %.2f",products[i_index][j].product_id,products[i_index][j].product_name,products[i_index][j].price);
   }
-  gotoxy(50,22);
-  printf("Enter Product ID to buy or 0 to Go back: ");
+  printf("\nEnter Product ID to buy or 0 to Go back: ");
   int product_id;
-  accept_id: scanf("%d",&product_id);
+  scanf("%d",&product_id);
   if(product_id==0){
     return;
   }
@@ -83,10 +95,10 @@ void display_category(int i_index){
             upper=middle-1;
         }
     }while(lower<=upper);
-     gotoxy(50,22);
-    if(lower>=upper){
-        printf("\nWrong product ID... Enter correctly: ");
-        goto accept_id;
+    if(lower>upper){
+        printf("\nWrong product ID... Please wait");
+        delay(1);
+        goto start;
     }
     else{
         printf("\nHow many item: ");
@@ -115,21 +127,13 @@ void shop(){
     int choice;
     do{
         system("cls");
-        gotoxy(61,15);
-        printf("---------CATEGORIES----------");
-        gotoxy(61,16);
-        printf("1.Mobile");
-        gotoxy(61,17);
-        printf("2.Laptop");
-        gotoxy(61,18);
-        printf("3.Refrigerator");
-        gotoxy(61,19);
-        printf("4.TV");
-        gotoxy(61,20);
-        printf("5.Purifiers");
-        gotoxy(61,21);
-        printf("6.Back");
-        gotoxy(61,22);
+        printf("---------CATEGORIES----------\n");
+        printf("1.Mobile\n");
+        printf("2.Laptop\n");
+        printf("3.Refrigerator\n");
+        printf("4.TV\n");
+        printf("5.Purifiers\n");
+        printf("6.Back\n");
         printf("Enter choice: ");
         scanf("%d",&choice);
         if(choice!=6){
@@ -141,35 +145,26 @@ void shop(){
 
 
 int login(){
-	gotoxy(61,15);
-	printf("-------------WELCOME TO ABC SHOPPING-------------");
-	gotoxy(61,16);
-	printf("\tPlease Login or Create a new account: \n");
-	gotoxy(61,17);
-	printf("1.Login");
-	gotoxy(61,18);
-	printf("2.New Account");
-	gotoxy(61,19);
-	printf("3.EXIT");
-	gotoxy(61,20);
+	printf("-------------WELCOME TO ABC SHOPPING-------------\n");
+	printf("Please Login or Create a new account: \n\n");
+	printf("1.Login\n");
+	printf("2.New Account\n");
+	printf("3.EXIT\n");
 	printf("Enter Choice: ");
 	int choice;
 	scanf("%d",&choice);
 	switch(choice){
 		case 1:{
 		    system("cls");
-		    gotoxy(61,15);
-            printf("-------------WELCOME TO ABC SHOPPING-------------");
-		    gotoxy(61,16);
-			printf("\t\tUSERNAME: ");
+		    printf("-------------WELCOME TO ABC SHOPPING-------------\n");
+		    printf("\tUSERNAME: ");
 			char username[15];
 			fflush(stdin);
 			gets(username);
 			account_current=account_start;
 			while(account_current!=NULL){
 				if(strcmp(username,account_current->username)==0){
-					gotoxy(61,18);
-					printf("\t\tPASSWORD: ");
+					printf("\n\tPASSWORD: ");
 					char password[15];
 					int j=0;
 					do{
@@ -182,8 +177,7 @@ int login(){
 					password[j-1]='\0';
 
 					if(strcmp(password,account_current->password)==0){
-						gotoxy(61,19);
-						printf("\t\tLogin Successful");
+						printf("\n\tLogin Successful");
 						j=0;
 						while(j<3){
 							delay(1);
@@ -196,31 +190,27 @@ int login(){
 				account_current=account_current->address;
 			}
 			if(account_current==NULL){
-				gotoxy(61,18);
-				printf("NO ACCOUNT FOUND...");
-				getch();
+				printf("\nNO ACCOUNT FOUND...Please wait");
+				delay(1);
 			}
 			return 0;
 		}
 		case 2:{
 		    acceptusername: system("cls");
-		    gotoxy(61,16);
-			printf("\t\tENTER USERNAME: ");
+		    printf("\n\tENTER USERNAME: ");
 			char username[15];
 			fflush(stdin);
 			gets(username);
 			account_current=account_start;
             while(account_current!=NULL){
 				if(strcmp(username,account_current->username)==0){
-                    gotoxy(61,17);
-                    printf("Username already taken...");
-                    getch();
+                    printf("\nUsername already taken...Please wait");
+                    delay(1);
                     goto acceptusername;
 				}
             account_current=account_current->address;
 			}
-			gotoxy(61,17);
-			printf("\t\tENTER PASSWORD: ");
+			printf("\n\tENTER PASSWORD: ");
 			char password[15];
 			int j=0;
 			do{
@@ -232,9 +222,8 @@ int login(){
 			}while(password[j-1]!='\r');
 			password[j-1]='\0';
 			newaccount(username,password);
-			gotoxy(61,18);
-			printf("Account Created.... Continue to Login.");
-			getch();
+			printf("\nAccount Created....Please wait to Continue to Login.");
+			delay(1);
 			return 0;
             }
         case 3:
@@ -244,43 +233,61 @@ int login(){
 
 
 int display_cart(){
-    //display function{
-	if(cart_start==NULL)
-	{
-		printf("cart is empty");
+	if(cart_start==NULL){
+		printf("\nCart is Empty");
+		delay(1);
 	}
 	else
 	{
+	    system("cls");
+	    printf("\n----------------------CART----------------------------");
+	    printf("\nProduct ID\tName\t\t\t Price\t\t QUANTITY\n");
 		cart_current=cart_start;
 		while(cart_current!=NULL)
 		{
-			printf("%d %s %.2f %d",cart_current->address->product_id,cart_current->address->product_name,cart_current->address->price,cart_current->quantity);
-			cart_current=cart_current->address;
+			printf("\n%d\t\t%-22s\t %.2f\t %d\n",cart_current->product_address->product_id,cart_current->product_address->product_name,
+            cart_current->product_address->price,cart_current->quantity);
+			cart_current=cart_current->next_node;
+
 		}
 	}
+	getch();
 	return;
 }
 
 
 void check_out(){
-    //display bill.
-    int total,result=0;
+    int grand_total=0;
+    system("cls");
     if(cart_start==NULL)
 	{
-		printf("cart is empty");
+		printf("\nCart is Empty");
 	}
 	else
 	{
+	    printf("--------------------CHECK---------------------\n");
+	     printf("\nProduct ID\tName\t\t  QUANTITY\tTOTAL\n");
 		cart_current=cart_start;
 		while(cart_current!=NULL)
 		{
-			total=cart_current->address->price*cart_current->quantity;
-			printf("%d %s %f %d %d",cart_current->address->product_id,cart_current->address->product_name,cart_current->address->price,cart_current->quantity,total);
-			cart_current=cart_current->address;
+			printf("%d\t\t%-22s\t %d\t %.2f\n",cart_current->product_address->product_id,cart_current->product_address->product_name,
+            cart_current->quantity,cart_current->total);
+            grand_total+=cart_current->total;
+			cart_current=cart_current->next_node;
 		}
-		result=result+total;
-		printf("grand total is %d",result);
+		printf("-----------------------------------------------------\n");
+		printf("\t\t\t\t\tGRAND TOTAL = %d",grand_total);
 	}
+	printf("\n-------------THANK YOU FOR SHOPPING WITH US...-----------");
+
+	cart_current=cart_start;
+	while(cart_current!=NULL){
+        struct cart_node *pointer=cart_current->next_node;
+        free(cart_current);
+        cart_current=pointer;
+	}
+	cart_start=NULL;
+	getch();
 }
 
 
@@ -288,17 +295,11 @@ void check_out(){
 int display_main_menu(){
      do{
          system("cls");
-         gotoxy(61,15);
-         printf("-------------WELCOME TO ABC SHOPPING-------------");
-         gotoxy(61,16);
-         printf("1.Shop");
-         gotoxy(61,17);
-         printf("2.Show cart");
-         gotoxy(61,18);
-         printf("3.Checkout");
-         gotoxy(61,19);
-         printf("4.Logout");
-         gotoxy(61,20);
+         printf("-------------WELCOME TO ABC SHOPPING-------------\n");
+         printf("1.Shop\n");
+         printf("2.Show cart\n");
+         printf("3.Checkout\n");
+         printf("4.Logout\n");
          printf("Enter choice: ");
          int choice;
          scanf("%d",&choice);
@@ -313,9 +314,29 @@ int display_main_menu(){
             check_out();
             break;
         case 4:
-            gotoxy(61,22);
-            printf("Logged out....");
-            getch();
+            if(cart_start!=NULL){
+                printf("\nCart not empty....Logging out will empty the cart...\n");
+                printf("Do you want to Logout(y/n): ");
+                fflush(stdin);
+                char choice;
+                scanf("%c",&choice);
+                if(choice=='y' || choice=='Y'){
+                    cart_current=cart_start;
+                    while(cart_current!=NULL){
+                        struct cart_node *pointer=cart_current->next_node;
+                        free(cart_current);
+                        cart_current=pointer;
+                    }
+                    cart_start=NULL;
+                    printf("\nLogged out....Please wait");
+                    delay(1);
+                    return 0;
+                }
+                else
+                    break;
+            }
+            printf("\nLogged out....Please wait");
+            delay(1);
             return 0;
          }
 

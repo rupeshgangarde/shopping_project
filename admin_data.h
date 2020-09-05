@@ -31,12 +31,3 @@ void delay(int second){
 }
 
 
-void gotoxy(int x,int y){
-	COORD crd;
-	crd.X=x;
-	crd.Y=y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),crd);
-}
-
-
-
